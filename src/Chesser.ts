@@ -1,3 +1,5 @@
+import {FileSystemAdapter} from "obsidian"
+import * as fs from 'fs';
 import { nanoid } from "nanoid";
 import {
   App,
@@ -67,18 +69,46 @@ export function draw_chessboard(app: App, settings: ChesserSettings) {
   };
 }
 
-function read_state(id: string) {
-  const savedDataStr = localStorage.getItem(`chesser-${id}`);
+function read_state(id: string, pth: string) {
+  //const savedDataStr = localStorage.getItem(`chesser-${id}`);
+  const filePath = `${pth}\\.obsidian\\plugins\\chesser-obsidian\\games\\chesser-${id}.json`;
+  var gameDir = pth+`\\.obsidian\\plugins\\chesser-obsidian\\games`;
   try {
+    const savedDataStr = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(savedDataStr);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+
+    try{
+
+      if (!fs.existsSync(gameDir)){
+        fs.mkdirSync(gameDir, { recursive: true });
+      }
+      fs.writeFileSync(filePath, JSON.stringify({"currentMoveIdx":-1,"moves":[],"pgn":""}));
+
+    } catch(err2){
+      console.error('Error reading file', err2);
+      return {}; // Return an empty object or handle error as needed
+    }
   }
-  return {};
+
 }
 
-function write_state(id: string, game_state: ChesserConfig) {
-  localStorage.setItem(`chesser-${id}`, JSON.stringify(game_state));
+function write_state(id: string, pth: string,game_state: ChesserConfig) {
+//   localStorage.setItem(`chesser-${id}`, JSON.stringify(game_state));
+  var fs = require('fs');
+  var filePath = pth+`\\.obsidian\\plugins\\chesser-obsidian\\games\\chesser-${id}.json`;
+  var gameDir = pth+`\\.obsidian\\plugins\\chesser-obsidian\\games`;
+
+  try {
+    if (!fs.existsSync(gameDir)) {
+      fs.mkdirSync(gameDir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, JSON.stringify(game_state));
+    // console.log(`Data written to file successfully to ${filePath}`);
+  } catch (err) {
+    console.log('Error writing file');
+    console.error(err);
+  }
 }
 
 export class Chesser extends MarkdownRenderChild {
@@ -91,6 +121,7 @@ export class Chesser extends MarkdownRenderChild {
 
   private menu: ChesserMenu;
   private moves: Move[];
+  private basePath: string;
 
   public currentMoveIdx: number;
 
@@ -98,7 +129,7 @@ export class Chesser extends MarkdownRenderChild {
     containerEl: HTMLElement,
     ctx: MarkdownPostProcessorContext,
     user_config: ChesserConfig,
-    app: App
+    app: App,
   ) {
     super(containerEl);
 
@@ -107,7 +138,11 @@ export class Chesser extends MarkdownRenderChild {
     this.id = user_config.id ?? nanoid(8);
     this.chess = new Chess();
 
-    const saved_config = read_state(this.id);
+    let basePath = (this.app.vault.adapter as any).basePath
+    this.basePath = basePath;
+    //console.log(this.basePath);
+
+    const saved_config = read_state(this.id, this.basePath);
     const config = Object.assign({}, user_config, saved_config);
 
     this.sync_board_with_gamestate = this.sync_board_with_gamestate.bind(this);
@@ -172,8 +207,9 @@ export class Chesser extends MarkdownRenderChild {
         }, 100);
       });
     }
-
-    this.menu = new ChesserMenu(containerEl, this);
+    if (config.viewMenu){
+      this.menu = new ChesserMenu(containerEl, this);
+    }
   }
 
   private set_style(el: HTMLElement, pieceStyle: string, boardStyle: string) {
@@ -232,8 +268,8 @@ export class Chesser extends MarkdownRenderChild {
   }
 
   private save_move() {
-    const config = read_state(this.id);
-    write_state(this.id, {
+    const config = read_state(this.id, this.basePath);
+    write_state(this.id, this.basePath, {
       ...config,
       currentMoveIdx: this.currentMoveIdx,
       moves: this.moves,
@@ -242,8 +278,8 @@ export class Chesser extends MarkdownRenderChild {
   }
 
   private save_shapes(shapes: DrawShape[]) {
-    const config = read_state(this.id);
-    write_state(this.id, {
+    const config = read_state(this.id, this.basePath);
+    write_state(this.id, this.basePath,{
       ...config,
       shapes,
     });
@@ -400,4 +436,5 @@ export class Chesser extends MarkdownRenderChild {
     this.cg.set({ fen: this.chess.fen(), lastMove });
     this.sync_board_with_gamestate();
   }
+
 }

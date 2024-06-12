@@ -10,6 +10,9 @@ export interface ChesserSettings {
   free: boolean;
   pieceStyle: string;
   boardStyle: string;
+
+  viewMenu: boolean;
+
 }
 
 export const DEFAULT_SETTINGS: ChesserSettings = {
@@ -19,6 +22,9 @@ export const DEFAULT_SETTINGS: ChesserSettings = {
   free: false,
   pieceStyle: "cburnett",
   boardStyle: "brown",
+
+  viewMenu: true,
+
 };
 
 export class ChesserSettingTab extends PluginSettingTab {
@@ -103,6 +109,16 @@ export class ChesserSettingTab extends PluginSettingTab {
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.free).onChange((free) => {
           this.plugin.settings.free = free;
+          this.plugin.saveSettings();
+        });
+      });
+
+    new Setting(containerEl)
+      .setName("View Menu")
+      .setDesc("If enabled, displays a menu on the left side of the board.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.viewMenu).onChange((viewMenu) => {
+          this.plugin.settings.viewMenu = viewMenu;
           this.plugin.saveSettings();
         });
       });

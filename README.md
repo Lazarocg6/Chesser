@@ -28,6 +28,7 @@ Here are the available settings for a `chesr` code block:
 | `boardStyle`  | A valid board style name.<br />Check [this](https://github.com/SilentVoid13/Chesser/tree/master/assets/board-css) to view available styles. | Style of the chess board.                                    |
 | `drawable`    | `true`/`false`                                               | Controls the ability to draw annotations (arrows, circles) on the board. |
 | `viewOnly`    | `true`/`false`                                               | If enabled, displays a static chess board (no moves, annotations, ...). |
+|  `viewMenu`   | `true`/`false`                                               | If enabled, displays a menu on the left side of the board.     |
 | `free`        | `true`/`false`                                               | If enabled, disables the chess logic, all moves are valid.   |
 
 You can permanently set some settings in [Chesser](https://github.com/SilentVoid13/Chesser)'s obsidian plugin settings.

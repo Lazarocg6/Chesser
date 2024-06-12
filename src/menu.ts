@@ -65,12 +65,12 @@ export default class ChesserMenu {
           this.chesser.loadFen(startingPosition.fen, startingPosition.moves);
         });
 
-        new Setting(sectionEl).setName("Enable Free Move?").addToggle((toggle) => {
-          toggle.setValue(this.chesser.getBoardState().movable.free);
-          toggle.onChange((value) => {
-            this.chesser.setFreeMove(value);
-          });
-        });
+        // new Setting(sectionEl).setName("Enable Free Move?").addToggle((toggle) => {
+        //   toggle.setValue(this.chesser.getBoardState().movable.free);
+        //   toggle.onChange((value) => {
+        //     this.chesser.setFreeMove(value);
+        //   });
+        // });
       });
     });
 

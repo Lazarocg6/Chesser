@@ -1,0 +1,9 @@
+{
+  "orientation": "white",
+  "viewOnly": false,
+  "drawable": true,
+  "free": false,
+  "pieceStyle": "cburnett",
+  "boardStyle": "brown",
+  "viewMenu": true
+}

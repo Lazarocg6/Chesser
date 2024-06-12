@@ -8,20 +8,24 @@
   align-items: flex-start;
   height: 400px;
   width: 100%;
+  justify-content: space-evenly;
 }
 
 .chess-menu-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin-left: 24px;
+  margin-left: 10px;
   width: calc(100% - 424px);
+  padding: 0px 25px 0px 10px;
 }
 
 .chess-toolbar-container {
   border-top: 1px solid var(--background-modifier-border);
   margin-top: auto;
   padding-top: 8px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .chess-turn-text {
@@ -68,4 +72,22 @@
   margin-top: 8px;
   margin-bottom: 12px;
   width: 100%;
+}
+body > div.app-container > div.horizontal-main-container > div > div.workspace-split.mod-vertical.mod-root > div > div.workspace-tab-container > div > div > div.view-content > div.markdown-source-view.cm-s-obsidian.mod-cm6.node-insert-event.is-readable-line-width.is-live-preview.is-folding.show-properties > div > div.cm-scroller > div.cm-sizer > div.cm-contentContainer > div > div.cm-preview-code-block.cm-embed-block.markdown-rendered > div.block-language-chesser.cburnett.brown-board.chesser-container > div.chess-menu-container > div.chess-toolbar-container > a{
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.markdown-source-view.mod-cm6 .cm-embed-block:not(.cm-table-widget):hover {
+    box-shadow: none;
+}
+
+.markdown-source-view.mod-cm6 .cm-content > * {
+  margin-bottom: 20px !important;
+  display: block;
+}
+
+.markdown-source-view.mod-cm6 .edit-block-button {
+  position: absolute;
+  bottom: 10px;
+  top: 363px;
 }
