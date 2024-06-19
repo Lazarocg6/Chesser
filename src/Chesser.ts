@@ -83,7 +83,7 @@ function read_state(id: string, pth: string) {
       if (!fs.existsSync(gameDir)){
         fs.mkdirSync(gameDir, { recursive: true });
       }
-      fs.writeFileSync(filePath, JSON.stringify({"currentMoveIdx":-1,"moves":[],"pgn":""}));
+      fs.writeFileSync(filePath, JSON.stringify({"currentMoveIdx":-1,"moves":[],"pgn":"","currentOrientation":"white"}));
 
     } catch(err2){
       console.error('Error reading file', err2);
@@ -104,7 +104,7 @@ function write_state(id: string, pth: string,game_state: ChesserConfig) {
       fs.mkdirSync(gameDir, { recursive: true });
     }
     fs.writeFileSync(filePath, JSON.stringify(game_state));
-    // console.log(`Data written to file successfully to ${filePath}`);
+    //console.log(`Data written to file successfully to ${filePath}`);
   } catch (err) {
     console.log('Error writing file');
     console.error(err);
@@ -178,11 +178,14 @@ export class Chesser extends MarkdownRenderChild {
     // Setup UI
     this.set_style(containerEl, config.pieceStyle, config.boardStyle);
     try {
+      if(config.currentOrientation == ""){
+        config.currentOrientation = "white";
+      }
       this.cg = Chessground(containerEl.createDiv(), {
         fen: this.chess.fen(),
         addDimensionsCssVars: true,
         lastMove,
-        orientation: config.orientation as Color,
+        orientation: config.currentOrientation as Color,
         viewOnly: config.viewOnly,
         drawable: {
           enabled: config.drawable,
@@ -283,6 +286,25 @@ export class Chesser extends MarkdownRenderChild {
       ...config,
       shapes,
     });
+  }
+
+  private update_orientation() {
+    let data = "";
+    const config = read_state(this.id, this.basePath);
+    if(config.currentOrientation == "white"){
+        data = "black";
+    }else if(config.currentOrientation == "black"){
+        data = "white";
+    }else{
+      console.log("No se pudo leer la orientacion: "+JSON.stringify(config))
+      return;
+    }
+    //console.log("Orientación: "+data)
+    write_state(this.id, this.basePath,{
+      ...config,
+      currentOrientation: data,
+    });
+
   }
 
   private sync_board_with_gamestate(shouldSave: boolean = true) {
@@ -399,6 +421,7 @@ export class Chesser extends MarkdownRenderChild {
   }
 
   public flipBoard() {
+    this.update_orientation()
     return this.cg.toggleOrientation();
   }
 

@@ -9,6 +9,7 @@ export interface ChesserConfig extends ChesserSettings {
   shapes?: any;
   currentMoveIdx?: number;
   moves?: string[];
+  currentOrientation: string;
 }
 
 const ORIENTATIONS = ["white", "black"];
@@ -51,6 +52,7 @@ export function parse_user_config(
   let userConfig: ChesserConfig = {
     ...settings,
     fen: "",
+    currentOrientation:"",
   };
 
   try {

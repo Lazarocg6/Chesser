@@ -65,6 +65,8 @@ If you want to support me and my work, you can donate me a little something by c
 
 ## Fork changes
 
+### R1
+
 Some visual changes.
 
 Option to hide the side menu.
@@ -73,3 +75,7 @@ Board position and moves are now stored as JSON files in /games inside the plugi
 
 ![hide_menu](imgs/hide_menu.png)
 ![show_menu](imgs/show_menu.png)
+
+### R2
+
+Orientation is now remembered for each board (It's stored in the JSON files).
